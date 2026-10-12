@@ -1,6 +1,5 @@
 # Terraform-Local — Laboratório DevOps
 
-> Repositório: [github.com/DereckSilva/Terraform-Local](https://github.com/DereckSilva/Terraform-Local)
 
 Infraestrutura **100% local** para estudar DevOps na prática: provisionamento com **Terraform**, orquestração com **Kubernetes (k3s)**, entrega contínua com **Argo CD** (GitOps) e uma stack de **observabilidade**. O cluster roda dentro de uma **máquina virtual na máquina local**, então dá para destruir e recriar o ambiente quando quiser, sem gastar com cloud e sem mexer no sistema do host.
 
