@@ -1,0 +1,19 @@
+.terraform.lock.hcl
+
+**/.terraform/*
+
+*.tfstate
+*.tfstate.*
+
+*.tfvars
+*.tfvars.json
+!*.tfvars.example
+
+*.tfplan
+tfplan
+
+# ISOs/imagens geradas localmente
+*.iso
+*.qcow2
+*.img
+terraform/vm/plano
