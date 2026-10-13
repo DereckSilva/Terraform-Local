@@ -1,0 +1,27 @@
+#cloud-config
+hostname: k8s-master
+fqdn: k8s-master.k8s.local
+
+users:
+  - name: ${user}
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    shell: /bin/bash
+    lock_passwd: false
+    ssh_authorized_keys:
+      - ${ssh_key}
+
+chpasswd:
+  expire: false
+  users:
+    - name: ${user}
+      password: ${password}
+      type: text
+
+package_update: true
+packages:
+  - qemu-guest-agent
+  - curl
+
+runcmd:
+  # a unit é "static" (sem [Install]): enable falha; ela sobe sozinha quando o canal virtio existe
+  - systemctl start qemu-guest-agent

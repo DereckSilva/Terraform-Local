@@ -1,0 +1,4 @@
+# Copie para terraform.tfvars e preencha (terraform.tfvars não é commitado)
+vm_user             = "seu-usuario"
+vm_password         = "troque-esta-senha"
+ssh_public_key_path = "~/.ssh/id_ed25519.pub"
