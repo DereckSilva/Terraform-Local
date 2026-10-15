@@ -1,0 +1,36 @@
+# ------------------------ SERVER ------------------------
+
+- name: Instalação do K3s
+  hosts: server
+  become: true
+  tasks:
+    - name: Busca o script de instalação do k3s
+      ansible.builtin.get_url:
+        url: https://get.k3s.io
+        dest: /tmp/install-k3s.sh
+        mode: +x
+
+    - name: Instala o k3s pelo arquivo
+      ansible.builtin.command: /tmp/install-k3s.sh
+      args:
+        creates: /usr/local/bin/k3s
+
+    - name: Verifica o status do k3s
+      ansible.builtin.command: systemctl status k3s
+      register: registro_k3s
+      changed_when: false
+
+    - name: Exibe o retorno do status do meu k3s
+      ansible.builtin.debug:
+        msg: "O status do k3s é {{ registro_k3s.stdout_lines }}"
+
+    - name: Verifica os nodes do k3s
+      ansible.builtin.command: k3s kubectl get nodes
+      register: nodes_k3s
+      changed_when: false
+
+    - name: Exibe os nodes
+      ansible.builtin.debug:
+        var: nodes_k3s.stdout_lines
+
+# ------------------------ AGENTES ------------------------

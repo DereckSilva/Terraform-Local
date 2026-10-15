@@ -1,4 +1,5 @@
 resource "libvirt_volume" "store_base" {
+  #inserir for each
   name = "armazenamento-vm.qcow2"
   pool = libvirt_pool.k8s.name
   target = {

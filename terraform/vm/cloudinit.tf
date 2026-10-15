@@ -1,4 +1,5 @@
 resource "libvirt_cloudinit_disk" "k8s_init" {
+  #inserir for each
   name = "k8s-cloudinit"
 
   meta_data = <<-EOF

@@ -1,4 +1,5 @@
 resource "libvirt_domain" "ubunutu-vm-k8s" {
+  #inserir for each
   name        = "ubunutu-cluster-vm"
   memory      = 6144
   memory_unit = "MiB"

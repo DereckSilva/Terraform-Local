@@ -1,4 +1,5 @@
 resource "libvirt_network" "vm-network" {
+  #inserir for each
   name      = "cluster-network"
   autostart = true
   forward = {
