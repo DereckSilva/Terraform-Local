@@ -1,7 +1,26 @@
+locals {
+  vms = {
+    "server" = {
+      name         = "ubunutu-cluster-vm-server"
+      address      = "52:54:00:00:00:10"
+      file_disk    = libvirt_volume.store_base["server"].path
+      file_cdroom  = libvirt_volume.k8s_init["server"].path
+      name_network = libvirt_network.vm-network.name
+    }
+    "agente" = {
+      name         = "ubunutu-cluster-vm-worker"
+      address      = "52:54:00:00:00:20"
+      file_disk    = libvirt_volume.store_base["agente"].path
+      file_cdroom  = libvirt_volume.k8s_init["agente"].path
+      name_network = libvirt_network.vm-network.name
+    }
+  }
+}
+
 resource "libvirt_domain" "ubunutu-vm-k8s" {
-  #inserir for each
-  name        = "ubunutu-cluster-vm"
-  memory      = 6144
+  for_each    = local.vms
+  name        = each.value.name
+  memory      = each.key == "server" ? 3072 : 2048 # master 3GB, worker 2GB
   memory_unit = "MiB"
   vcpu        = 2
   type        = "kvm"
@@ -20,7 +39,7 @@ resource "libvirt_domain" "ubunutu-vm-k8s" {
         # o backing store e libera a imagem base no perfil AppArmor da VM
         source = {
           file = {
-            file = libvirt_volume.store_base.path
+            file = each.value.file_disk
           }
         }
         driver = { type = "qcow2" }
@@ -30,7 +49,7 @@ resource "libvirt_domain" "ubunutu-vm-k8s" {
         device = "cdrom"
         source = {
           file = {
-            file = libvirt_volume.k8s_init.path
+            file = each.value.file_cdroom
           }
         }
         target = { dev = "sda", bus = "sata" }
@@ -48,11 +67,11 @@ resource "libvirt_domain" "ubunutu-vm-k8s" {
     interfaces = [{
       source = {
         network = {
-          network = libvirt_network.vm-network.name
+          network = each.value.name_network
         }
       }
       mac = {
-        address = "52:54:00:00:00:10"
+        address = each.value.address
       }
       model = {
         type = "virtio"

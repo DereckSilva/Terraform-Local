@@ -33,4 +33,33 @@
       ansible.builtin.debug:
         var: nodes_k3s.stdout_lines
 
+    - name: Recupera o token do k3s para conectar no servidor
+      ansible.builtin.command: cat /var/lib/rancher/k3s/server/node-token
+      register: token_k3s
+      changed_when: false
+
 # ------------------------ AGENTES ------------------------
+
+- name: Link do agente com o servidor do K3s
+  hosts: agentes
+  become: true
+  tasks:
+    - name: Retorna o token aplicado
+      ansible.builtin.debug:
+        var: token_k3s.stdout_lines
+
+    - name: Recupera arquivo do k3s
+      ansible.builtin.get_url:
+        url: https://get.k3s.io
+        dest: /tmp/install-k3s.sh
+        mode: +x
+
+    # AJUSTAR A CONEXÃO DO AGENTE COM O SERVIDOR
+    - name: Faz a conexão no servidor do control plane
+      ansible.builtin.shell: /tmp/install-k3s.sh | K3S_URL=https://192.168.100.50:6443 K3S_TOKEN={{ hostvars[groups['server'][0]].token_k3s.stdout}} sh -
+      register: token_conexao
+      changed_when: false
+
+    - name: Verifica se a conexão funcionou
+      ansible.builtin.debug:
+        var: token_conexao.stdout_lines

@@ -1,5 +1,4 @@
 resource "libvirt_network" "vm-network" {
-  #inserir for each
   name      = "cluster-network"
   autostart = true
   forward = {
@@ -19,13 +18,21 @@ resource "libvirt_network" "vm-network" {
       addr = "8.8.8.8" # oq não é local manda para esse ip
     }]
 
-    host = [{
+    host = [
       # cada ip recebe um hostname
-      ip = "192.168.100.50"
-      hostnames = [{
-        hostname = "api.k8s.local"
-      }]
-    }]
+      {
+        ip = "192.168.100.50"
+        hostnames = [{
+          hostname = "api-server.k8s.local"
+        }]
+      },
+      {
+        ip = "192.168.100.60"
+        hostnames = [{
+          hostname = "api-worker.k8s.local"
+        }]
+      }
+    ]
   }
 
   ips = [{
@@ -40,6 +47,7 @@ resource "libvirt_network" "vm-network" {
 
       hosts = [
         { mac = "52:54:00:00:00:10", name = "k8s-master", ip = "192.168.100.50" },
+        { mac = "52:54:00:00:00:20", name = "k8s-worker", ip = "192.168.100.60" },
       ]
     }
   }]

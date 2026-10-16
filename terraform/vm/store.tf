@@ -1,7 +1,18 @@
+locals {
+  vms_store = {
+    "server" = {
+      name = "armazenamento-vm-server.qcow2"
+    }
+    "agente" = {
+      name = "armazenamento-vm-worker.qcow2"
+    }
+  }
+}
+
 resource "libvirt_volume" "store_base" {
-  #inserir for each
-  name = "armazenamento-vm.qcow2"
-  pool = libvirt_pool.k8s.name
+  for_each = local.vms_store
+  name     = each.value.name
+  pool     = libvirt_pool.k8s.name
   target = {
     format = {
       type = "qcow2"
